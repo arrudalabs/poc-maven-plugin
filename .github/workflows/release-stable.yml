@@ -46,8 +46,8 @@ jobs:
           
     - name: Setting up git user
       run: |
-        git config user.name "Maximillian Arruda"
-        git config user.email dearrudam@gmail.com
+        git config --global user.name "Maximillian Arruda"
+        git config --global user.email "dearrudam@gmail.com"
         
     - name: Build with Maven and Deploy SNAPSHOT
       run: mvn -B release:prepare release:perform -s settings.xml --file pom.xml
