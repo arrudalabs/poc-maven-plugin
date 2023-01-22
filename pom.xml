@@ -30,9 +30,9 @@
     </organization>
 
     <scm>
-        <connection>scm:git:https://github.com/arrudalabs/poc-maven-plugin.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/arrudalabs/poc-maven-plugin.git</developerConnection>
-        <url>https://github.com/arrudalabs/poc-maven-plugin</url>
+        <connection>scm:git:${project.scm.url}</connection>
+        <developerConnection>scm:git:${project.scm.url}</developerConnection>
+        <url>https://github.com/arrudalabs/poc-maven-plugin.git</url>
         <tag>HEAD</tag>
     </scm>
 
