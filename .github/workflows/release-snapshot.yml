@@ -15,7 +15,7 @@
 #
 #
 
-name: Github CD - SNAPSHOT.yml
+name: Publishing Snapshot packages to the Maven Central Repository
 
 on:
   workflow_dispatch:
