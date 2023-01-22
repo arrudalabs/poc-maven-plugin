@@ -35,12 +35,23 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: 11
-        server-id: ossrh
+        overwrite-settings: false
+        settings-path: ${{ github.workspace }}
         gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
         gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+    
+    - name: Cache local Maven repository
+      uses: actions/cache@v3
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven
+          
     - name: Build with Maven
       run: mvn -B verify -P run-its --file pom.xml
       env:
+        SERVER_ID: ossrh 
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
