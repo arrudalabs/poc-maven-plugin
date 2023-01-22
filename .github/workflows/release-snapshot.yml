@@ -15,7 +15,9 @@
 #
 #
 
-name: Publishing snapshot packages to the Maven Central Repository
+# Publishing snapshot packages to the Maven Central Repository
+
+name: publish-snapshot-to-maven-central
 
 on:
   workflow_dispatch:
