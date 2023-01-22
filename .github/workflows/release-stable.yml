@@ -43,14 +43,12 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven
-          
-    - name: Setting up git user
+        
+    - name: Build with Maven and Deploy SNAPSHOT
       run: |
         git config --global user.name "Maximillian Arruda"
         git config --global user.email "dearrudam@gmail.com"
-        
-    - name: Build with Maven and Deploy SNAPSHOT
-      run: mvn -B release:prepare release:perform -s settings.xml --file pom.xml
+        mvn -B release:prepare release:perform -s settings.xml --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         SERVER_ID: ossrh 
