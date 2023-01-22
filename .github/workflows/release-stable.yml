@@ -44,6 +44,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven
           
+    - name: Setting up github-actions<github-actions@github.com> user
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        
     - name: Build with Maven and Deploy SNAPSHOT
       run: mvn -B release:prepare release:perform -s settings.xml --file pom.xml
       env:
