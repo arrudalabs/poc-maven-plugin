@@ -14,8 +14,8 @@
 #
 #
 #
-
-name: Publishing stable packages to the Maven Central Repository
+# Publishing stable packages to the Maven Central Repository
+name: publish-stable-packages-to-maven-central
 
 on:
   workflow_dispatch:
