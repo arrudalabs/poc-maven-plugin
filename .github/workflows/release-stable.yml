@@ -15,7 +15,7 @@
 #
 #
 # Publishing stable packages to the Maven Central Repository
-name: publish-stable-packages-to-maven-central
+name: publish-packages-to-maven-central
 
 on:
   workflow_dispatch:
@@ -52,6 +52,7 @@ jobs:
     - name: Build with Maven and Deploy SNAPSHOT
       run: mvn -B release:prepare release:perform -s settings.xml --file pom.xml
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         SERVER_ID: ossrh 
         MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
         MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
