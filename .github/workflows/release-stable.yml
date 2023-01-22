@@ -48,6 +48,7 @@ jobs:
       run: |
         git config --global user.name "Maximillian Arruda"
         git config --global user.email "dearrudam@gmail.com"
+        git config --global url."git@github.com:".insteadOf "https://github.com/"
         mvn -B release:prepare release:perform -s settings.xml --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
