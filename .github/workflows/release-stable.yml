@@ -44,11 +44,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven
           
-    - name: Setting up github-actions<github-actions@github.com> user
+    - name: Setting up git user
       run: |
-        git config user.name github-actions
-        git config user.email github-actions@github.com
-        git config --global url."git@github.com:".insteadOf "https://github.com/"
+        git config user.name "Maximillian Arruda"
+        git config user.email dearrudam@gmail.com
         
     - name: Build with Maven and Deploy SNAPSHOT
       run: mvn -B release:prepare release:perform -s settings.xml --file pom.xml
