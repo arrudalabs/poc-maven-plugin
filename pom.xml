@@ -15,7 +15,8 @@
   ~    limitations under the License.
   ~
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.arrudalabs</groupId>
@@ -27,6 +28,8 @@
         <name>ArrudaLabs</name>
         <url>https://github.com/arrudalabs</url>
     </organization>
+
+    <inceptionYear>2023</inceptionYear>
 
     <scm>
         <connection>scm:git:${project.scm.url}</connection>
@@ -65,7 +68,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.release>11</maven.compiler.release>
         <maven.version>3.3.9</maven.version>
-
+        <altDeploymentRepository>local::file:./${stagingRepository}</altDeploymentRepository>
+        <stagingRepository>target/staging-deploy</stagingRepository>
         <junit.version>5.9.1</junit.version>
         <maven-javadoc-plugin.vesion>3.3.2</maven-javadoc-plugin.vesion>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -145,6 +149,10 @@
         <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
             <plugins>
                 <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
@@ -213,23 +221,17 @@
                     <version>${sonar.maven.version}</version>
                 </plugin>
                 <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>1.6.7</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>3.0.0-M7</version>
+                    <groupId>org.jreleaser</groupId>
+                    <artifactId>jreleaser-maven-plugin</artifactId>
+                    <version>1.4.0</version>
                 </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -257,90 +259,93 @@
                         <module name="Checker">
 
                             <module name="FileLength">
-                                <property name="max" value="3500" />
-                                <property name="fileExtensions" value="java" />
+                                <property name="max" value="3500"/>
+                                <property name="fileExtensions" value="java"/>
                             </module>
 
                             <module name="LineLength">
-                                <property name="max" value="180" />
-                                <property name="ignorePattern" value="@version|@see" />
+                                <property name="max" value="180"/>
+                                <property name="ignorePattern" value="@version|@see"/>
                             </module>
 
-                            <module name="FileTabCharacter" />
+                            <module name="FileTabCharacter"/>
 
                             <module name="TreeWalker">
-                                <module name="SuppressionCommentFilter" />
+                                <module name="SuppressionCommentFilter"/>
                                 <module name="ConstantName">
-                                    <property name="format" value="^(_?[a-z][a-zA-Z0-9]*|([A-Z](_?[A-Z0-9]+)*))$" />
+                                    <property name="format" value="^(_?[a-z][a-zA-Z0-9]*|([A-Z](_?[A-Z0-9]+)*))$"/>
                                 </module>
 
-                                <module name="LocalVariableName" />
+                                <module name="LocalVariableName"/>
                                 <module name="MethodName">
-                                    <property name="format" value="^_?[a-z][a-zA-Z0-9]*$" />
+                                    <property name="format" value="^_?[a-z][a-zA-Z0-9]*$"/>
                                 </module>
-                                <module name="PackageName" />
-                                <module name="LocalFinalVariableName" />
-                                <module name="ParameterName" />
-                                <module name="StaticVariableName" />
+                                <module name="PackageName"/>
+                                <module name="LocalFinalVariableName"/>
+                                <module name="ParameterName"/>
+                                <module name="StaticVariableName"/>
                                 <module name="TypeName">
-                                    <property name="format" value="^_?[A-Z][a-zA-Z0-9]*$" />
+                                    <property name="format" value="^_?[A-Z][a-zA-Z0-9]*$"/>
                                 </module>
 
                                 <module name="AvoidStarImport">
-                                    <property name="excludes" value="java.io,java.net,java.util,jakarta.enterprise.inject.spi,jakarta.enterprise.context" />
+                                    <property name="excludes"
+                                              value="java.io,java.net,java.util,jakarta.enterprise.inject.spi,jakarta.enterprise.context"/>
                                 </module>
-                                <module name="IllegalImport" />
-                                <module name="RedundantImport" />
-                                <module name="UnusedImports" />
+                                <module name="IllegalImport"/>
+                                <module name="RedundantImport"/>
+                                <module name="UnusedImports"/>
 
                                 <module name="MethodLength">
-                                    <property name="max" value="250" />
+                                    <property name="max" value="250"/>
                                 </module>
                                 <module name="ParameterNumber">
-                                    <property name="max" value="15" />
+                                    <property name="max" value="15"/>
                                 </module>
 
                                 <module name="EmptyBlock">
-                                    <property name="option" value="text" />
+                                    <property name="option" value="text"/>
                                 </module>
 
                                 <module name="NeedBraces">
-                                    <property name="tokens" value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE" />
+                                    <property name="tokens"
+                                              value="LITERAL_DO, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE"/>
                                 </module>
                                 <module name="LeftCurly">
-                                    <property name="option" value="EOL" />
+                                    <property name="option" value="EOL"/>
                                 </module>
                                 <module name="RightCurly">
-                                    <property name="option" value="SAME" />
+                                    <property name="option" value="SAME"/>
                                 </module>
 
-                                <module name="EmptyStatement" />
-                                <module name="EqualsHashCode" />
-                                <module name="DefaultComesLast" />
-                                <module name="MissingSwitchDefault" />
-                                <module name="FallThrough" />
-                                <module name="MultipleVariableDeclarations" />
+                                <module name="EmptyStatement"/>
+                                <module name="EqualsHashCode"/>
+                                <module name="DefaultComesLast"/>
+                                <module name="MissingSwitchDefault"/>
+                                <module name="FallThrough"/>
+                                <module name="MultipleVariableDeclarations"/>
 
                                 <module name="com.puppycrawl.tools.checkstyle.checks.design.DesignForExtensionCheck">
-                                    <property name="severity" value="ignore" />
+                                    <property name="severity" value="ignore"/>
                                 </module>
 
-                                <module name="HideUtilityClassConstructor" />
+                                <module name="HideUtilityClassConstructor"/>
 
                                 <module name="com.puppycrawl.tools.checkstyle.checks.design.VisibilityModifierCheck">
-                                    <property name="packageAllowed" value="false" />
-                                    <property name="protectedAllowed" value="true" />
-                                    <property name="publicMemberPattern" value="^serialVersionUID" />
-                                    <property name="severity" value="warning" />
+                                    <property name="packageAllowed" value="false"/>
+                                    <property name="protectedAllowed" value="true"/>
+                                    <property name="publicMemberPattern" value="^serialVersionUID"/>
+                                    <property name="severity" value="warning"/>
                                 </module>
 
-                                <module name="UpperEll" />
+                                <module name="UpperEll"/>
 
                                 <module name="AnnotationLocation">
-                                    <property name="allowSamelineMultipleAnnotations" value="false" />
-                                    <property name="allowSamelineSingleParameterlessAnnotation" value="false" />
-                                    <property name="allowSamelineParameterizedAnnotation" value="false" />
-                                    <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF, ANNOTATION_DEF" />
+                                    <property name="allowSamelineMultipleAnnotations" value="false"/>
+                                    <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
+                                    <property name="allowSamelineParameterizedAnnotation" value="false"/>
+                                    <property name="tokens"
+                                              value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF, ANNOTATION_DEF"/>
                                 </module>
                             </module>
                         </module>
@@ -453,33 +458,41 @@
                 <version>3.4.0</version>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <configuration>
-                            <gpgArguments>
-                                <arg>--pinentry-mode</arg>
-                                <arg>loopback</arg>
-                            </gpgArguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
                 <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <tagNameFormat>@{project.version}</tagNameFormat>
-                    <goals>deploy</goals>
+                    <jreleaser>
+                        <project>
+                            <license>APACHE-2.0</license>
+                        </project>
+
+                        <release>
+                            <github>
+                                <changelog>
+                                    <formatted>ALWAYS</formatted>
+                                    <preset>conventional-commits</preset>
+                                </changelog>
+                            </github>
+                        </release>
+                        <signing>
+                            <active>ALWAYS</active>
+                            <armored>true</armored>
+                        </signing>
+                        <deploy>
+                            <maven>
+                                <nexus2>
+                                    <maven-central>
+                                        <active>ALWAYS</active>
+                                        <url>https://s01.oss.sonatype.org/service/local</url>
+                                        <closeRepository>true</closeRepository>
+                                        <releaseRepository>false</releaseRepository>
+                                        <stagingRepositories>${stagingRepository}</stagingRepositories>
+                                    </maven-central>
+                                </nexus2>
+                            </maven>
+                        </deploy>
+
+                    </jreleaser>
                 </configuration>
             </plugin>
         </plugins>
@@ -563,64 +576,36 @@
             <id>release</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <configuration>
-                                    <gpgArguments>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+
                 </plugins>
             </build>
         </profile>
     </profiles>
 
-    <distributionManagement>
-        <site>
-            <id>github</id>
-            <url>scm:git:ssh://git@github.com/arrudalabs/poc-maven-plugin.git</url>
-        </site>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-    <repositories>
-        <repository>
-            <id>oss.sonatype.org-snapshot</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+    <!--    <distributionManagement>-->
+    <!--        <site>-->
+    <!--            <id>github</id>-->
+    <!--            <url>scm:git:ssh://git@github.com/arrudalabs/poc-maven-plugin.git</url>-->
+    <!--        </site>-->
+    <!--        <snapshotRepository>-->
+    <!--            <id>ossrh</id>-->
+    <!--            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>-->
+    <!--        </snapshotRepository>-->
+    <!--        <repository>-->
+    <!--            <id>ossrh</id>-->
+    <!--            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+    <!--        </repository>-->
+    <!--    </distributionManagement>-->
+    <!--    <repositories>-->
+    <!--        <repository>-->
+    <!--            <id>oss.sonatype.org-snapshot</id>-->
+    <!--            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>-->
+    <!--            <releases>-->
+    <!--                <enabled>false</enabled>-->
+    <!--            </releases>-->
+    <!--            <snapshots>-->
+    <!--                <enabled>true</enabled>-->
+    <!--            </snapshots>-->
+    <!--        </repository>-->
+    <!--    </repositories>-->
 </project>
